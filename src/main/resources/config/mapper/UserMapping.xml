@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+	<mapper namespace="com.xuchg.mssm.dao.UserDao">
+
+		<select id="getUserByPage" resultType="com.xuchg.mssm.module.User">
+			select * from user order by id limit #{page},#{sum}
+		</select>
+
+		<select id="getPage" resultType="com.xuchg.mssm.module.User">
+			select * from user
+		</select>
+
+		<insert id="addUser">
+			insert into user values(#{user.id},#{user.userName},#{user.passWord},#{user.balance})
+		</insert>
+
+		<select id="getUserById" resultType="com.xuchg.mssm.module.User">
+			select * from user where id=#{id}
+		</select>
+
+		<update id="changeUserInfo">
+			update user set username=#{user.userName},password=#{user.passWord},balance=#{user.balance} where id=#{user.id}
+		</update>
+
+		<delete id="deleteUserById">
+			delete from user where id=#{id}
+		</delete>
+
+</mapper>

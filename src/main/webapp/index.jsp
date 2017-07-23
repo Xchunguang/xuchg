@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-    <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -8,16 +7,17 @@
 <title>Insert title here</title>
 </head>
 <body>
-
-	<table>
-		<c:forEach items="${list }" var="list">
-			<tr>
-				<td>${list.id }</td>
-				<td>${list.userName }</td>
-				<td>${list.passWord }</td>
-				<td>${list.balance }</td>
-			</tr>
-		</c:forEach>
-	</table>
+	<div id="info"></div>
+<script src="js/jquery-1.11.0.min.js"></script>
+<script>
+	$.ajax({
+		url:'getAll.do',
+		type:'get',
+		dataType:'json',
+		success:function(data){
+			$("#info").html(data);
+		}
+	});
+</script>
 </body>
 </html>

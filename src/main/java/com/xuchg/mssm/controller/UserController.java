@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.xuchg.mssm.module.User;
 import com.xuchg.mssm.service.UserService;
@@ -20,9 +21,10 @@ public class UserController {
 	UserService userService;
 	
 	@RequestMapping(value="/getAll",method=RequestMethod.GET)
-	public String getAll(ModelMap map,HttpServletRequest request){
+	@ResponseBody
+	public ModelMap getAll(ModelMap map,HttpServletRequest request){
 		List<User> list = userService.getAll();
 		map.addAttribute("list",list);
-		return "index";
+		return map;
 	}
 }

@@ -8,14 +8,15 @@
 </head>
 <body>
 	<div id="info"></div>
-<script src="js/jquery-1.11.0.min.js"></script>
+<script src="js/jquery.min.js"></script>
 <script>
 	$.ajax({
 		url:'getAll.do',
 		type:'get',
 		dataType:'json',
 		success:function(data){
-			$("#info").html(data);
+			console.log(data.list);
+			$("#info").html(data.list);
 		}
 	});
 </script>

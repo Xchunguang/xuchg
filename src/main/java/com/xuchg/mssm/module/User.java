@@ -1,7 +1,11 @@
 package com.xuchg.mssm.module;
 
-public class User {
+public class User implements java.io.Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Integer id;
 	private String userName;
 	private String passWord;
@@ -36,6 +40,10 @@ public class User {
 	}
 	public User() {
 		super();
+	}
+	public User(String userName,String passWord){
+		this.userName = userName;
+		this.passWord = passWord;
 	}
 	
 	

@@ -10,4 +10,7 @@ public interface JedisClient {
     public long ttl(String key);
     public long del(String key);
     public long hdel(String hkey, String key);
+    public String set(byte[] key,byte[] value);
+    public byte[] get(byte[] key);
+    public long del(byte[] key);
 }

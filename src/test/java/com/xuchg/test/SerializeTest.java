@@ -33,9 +33,14 @@ public class SerializeTest {
 		User user = new User("xcg","123456");
 		//序列化对象
 		byte[] userByte = SerializeUtil.serialize(user);
+		jedisClient.set("xuchg".getBytes(),userByte);
+		byte[] resultUserByte = jedisClient.get("xuchg".getBytes());
 		//反序列化对象
 		User toUser = (User)SerializeUtil.unserialize(userByte);
+		
+		User fromRedisUser = (User)SerializeUtil.unserialize(resultUserByte);
 		System.out.println(toUser);
+		System.out.println(fromRedisUser);
 	}
 	
 

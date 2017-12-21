@@ -21,8 +21,19 @@ public class RedisTest {
 	
 	@Test
 	public void testOrignRedis(){
-		jedisClient.set("password1", "13256666666666");
-		String password = jedisClient.get("password");
+		jedisClient.set("123", "13256666666666");
+		String password = jedisClient.get("123");
 		System.out.println(password);
+	}
+	
+	@Test
+	public void setKeyTimeTest(){
+		jedisClient.set("testKey", "I will disapared servial second later");
+	}
+	
+	@Test
+	public void getKeyTimeTest(){
+		String result = jedisClient.get("testKey");
+		System.out.println(result);
 	}
 }

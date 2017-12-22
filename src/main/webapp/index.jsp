@@ -50,12 +50,14 @@
 	     	 
 	 	    	//连接发生错误的回调方法
 	 	         websocket.onerror = function () {
-	 	             console.log("WebSocket连接发生错误");
+	 	             console.log("WebSocket连接发生错误,重新连接。。");
+	 	             connect();
 	 	         };
 	 	     
 	 	         //连接成功建立的回调方法
 	 	         websocket.onopen = function () {
-	 	             console.log("WebSocket连接成功");
+	 	        	heartConnect.start();
+ 	             	console.log("WebSocket连接成功");
 	 	         }
 	 	     
 	 	         //接收到消息的回调方法
@@ -83,6 +85,7 @@
     
      //关闭WebSocket连接
       function closeWebSocket() {
+    	  heartConnect.close();
           websocket.close();
       }
   
@@ -92,6 +95,26 @@
           websocket.send(message);
       }
       
+      var heartConnect = {
+    		 timeOut:6000,
+    		 timeOutObj:null,
+    		 start:function(){
+    			 this.timeOutObj = setTimeout(function(){
+    				 var websocketState = websocket?(websocket.readyState?websocket.readyState:0):0;
+    				 if(websocketState===1){
+    					 console.log('websocket连接正常，重置心跳');
+    					 clearTimeout(this.timeOutObj);
+    					 heartConnect.start();
+    				 }else{
+    					 console.log('websocket连接失败，重新连接。。');
+    					 connect();
+    				 }
+    			 },this.timeOut);
+    		 },
+			 close:function(){
+				 clearTimeout(this.timeOutObj);
+			 }    		 
+      }
       
       
 </script>

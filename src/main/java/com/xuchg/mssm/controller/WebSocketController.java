@@ -2,6 +2,7 @@ package com.xuchg.mssm.controller;
 
 import java.io.IOException;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.websocket.OnClose;
 import javax.websocket.OnError;
@@ -12,9 +13,9 @@ import javax.websocket.server.ServerEndpoint;
 
 @ServerEndpoint("/websocket")
 public class WebSocketController {
-    //静态变量，用来记录当前在线连接数。应该把它设计成线程安全的。
-    private static int onlineCount = 0;
-
+    //静态变量，用来记录当前在线连接数。线程安全。
+    private static AtomicInteger onlineCount = new AtomicInteger(0);
+    
     //concurrent包的线程安全Set，用来存放每个客户端对应的MyWebSocket对象。若要实现服务端与单一客户端通信的话，可以使用Map来存放，其中Key可以为用户标识
     private static CopyOnWriteArraySet<WebSocketController> webSocketSet = new CopyOnWriteArraySet<WebSocketController>();
 
@@ -84,14 +85,15 @@ public class WebSocketController {
     }
 
     public static synchronized int getOnlineCount() {
-        return onlineCount;
+        return onlineCount.get();
     }
 
     public static synchronized void addOnlineCount() {
-    	WebSocketController.onlineCount++;
+    	//将原子变量+1
+    	WebSocketController.onlineCount.getAndIncrement();
     }
 
     public static synchronized void subOnlineCount() {
-    	WebSocketController.onlineCount--;
+    	WebSocketController.onlineCount.getAndDecrement();
     }
 }

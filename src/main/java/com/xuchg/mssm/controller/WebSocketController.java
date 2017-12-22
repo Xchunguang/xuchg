@@ -1,9 +1,8 @@
 package com.xuchg.mssm.controller;
 
 import java.io.IOException;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
-
-
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.websocket.OnClose;
@@ -18,9 +17,8 @@ public class WebSocketController {
     //静态变量，用来记录当前在线连接数。线程安全。
     private static AtomicInteger onlineCount = new AtomicInteger(0);
     
-    //concurrent包的线程安全Set，用来存放每个客户端对应的MyWebSocket对象。若要实现服务端与单一客户端通信的话，可以使用Map来存放，其中Key可以为用户标识
-    private static CopyOnWriteArraySet<WebSocketController> webSocketSet = new CopyOnWriteArraySet<WebSocketController>();
-
+    //concurrent包的线程安全Map，用来存放每个客户端对应的MyWebSocket对象
+    private static ConcurrentHashMap<String,WebSocketController> webSocketMap = new ConcurrentHashMap<String, WebSocketController>();
     //与某个客户端的连接会话，需要通过它来给客户端发送数据
     private Session session;
 
@@ -31,7 +29,7 @@ public class WebSocketController {
     @OnOpen
     public void onOpen(Session session){
         this.session = session;
-        webSocketSet.add(this);     //加入set中
+        webSocketMap.put(session.getId(), this);
         addOnlineCount();           //在线数加1
         System.out.println("有新连接加入！当前在线人数为" + getOnlineCount());
     }
@@ -41,7 +39,7 @@ public class WebSocketController {
      */
     @OnClose
     public void onClose(){
-        webSocketSet.remove(this);  //从set中删除
+        webSocketMap.remove(this.session.getId());
         subOnlineCount();           //在线数减1
         System.out.println("有一连接关闭！当前在线人数为" + getOnlineCount());
     }
@@ -55,13 +53,13 @@ public class WebSocketController {
     public void onMessage(String message, Session session) {
         System.out.println("来自客户端的消息:" + message);
         //群发消息
-        for(WebSocketController item: webSocketSet){
-            try {
-                item.sendMessage(message);
-            } catch (IOException e) {
-                e.printStackTrace();
-                continue;
-            }
+        for(String key:webSocketMap.keySet()){
+        	try{
+        		webSocketMap.get(key).sendMessage("你的id为："+key);
+        	}catch(IOException e){
+        		e.printStackTrace();
+        		continue;
+        	}
         }
     }
 
